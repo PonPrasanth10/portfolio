@@ -1,0 +1,149 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { SectionWrapper } from "../components/SectionWrapper";
+import { Mail, Send } from "lucide-react";
+
+const GithubIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+  </svg>
+);
+
+const LinkedinIcon = ({ className }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+  </svg>
+);
+
+const contactLinks = [
+  { icon: <Mail className="w-5 h-5" />, label: "Email", href: "mailto:ponprasanthr@gmail.com", display: "ponprasanthr@gmail.com" },
+  { icon: <LinkedinIcon className="w-5 h-5" />, label: "LinkedIn", href: "https://linkedin.com/in/ponprasanthr", display: "linkedin.com/in/ponprasanthr" },
+  { icon: <GithubIcon className="w-5 h-5" />, label: "GitHub", href: "https://github.com/PonPrasanth10", display: "github.com/PonPrasanth10" },
+];
+
+const inputStyle = { backgroundColor: "rgba(47,47,47,0.5)", borderColor: "rgba(255,255,255,0.08)" };
+const inputClass = "w-full border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-all placeholder:text-textSecondary/50";
+
+export const Contact = () => {
+  const [formState, setFormState] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSuccess(true);
+      setFormState({ name: "", email: "", message: "" });
+      setTimeout(() => setIsSuccess(false), 3000);
+    }, 1500);
+  };
+
+  return (
+    <SectionWrapper id="contact">
+      <div className="text-center mb-12 md:mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <span className="text-white">Get in Touch</span>
+        </h2>
+        <p className="text-textSecondary max-w-xl mx-auto text-sm md:text-base">
+          I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
+        </p>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 lg:items-stretch">
+        {/* Contact info */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="w-full lg:w-2/5 flex"
+        >
+          <div className="glass-card p-6 md:p-8 w-full flex flex-col gap-6">
+            <div>
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-3">Let's Connect</h3>
+              <p className="text-textSecondary text-sm md:text-base leading-relaxed">
+                Whether you have a question or just want to say hi, I'll try my best to get back to you!
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 flex-1 justify-center">
+              {contactLinks.map((link, idx) => (
+                <a
+                  key={idx}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors group"
+                  style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  <div
+                    className="p-2.5 rounded-full text-textSecondary group-hover:text-white transition-colors flex-shrink-0"
+                    style={{ backgroundColor: "#2F2F2F" }}
+                  >
+                    {link.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs text-textSecondary block mb-0.5">{link.label}</span>
+                    <span className="text-white text-sm font-medium group-hover:text-accent transition-colors truncate block">
+                      {link.display}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Form */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="w-full lg:w-3/5 glass-card p-6 md:p-8"
+        >
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-textSecondary mb-2">Name</label>
+              <input
+                type="text" id="name" required
+                value={formState.name}
+                onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                className={inputClass} style={inputStyle} placeholder="John Doe"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-textSecondary mb-2">Email</label>
+              <input
+                type="email" id="email" required
+                value={formState.email}
+                onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                className={inputClass} style={inputStyle} placeholder="john@example.com"
+              />
+            </div>
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-textSecondary mb-2">Message</label>
+              <textarea
+                id="message" required rows={5}
+                value={formState.message}
+                onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                className={inputClass + " resize-none"} style={inputStyle}
+                placeholder="Your message here..."
+              />
+            </div>
+            <button
+              type="submit" disabled={isSubmitting}
+              className="w-full py-3.5 rounded-xl bg-white text-primary font-semibold flex items-center justify-center gap-2 hover:bg-white/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base"
+            >
+              {isSubmitting ? (
+                <span className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+              ) : isSuccess ? "Message Sent! ✓" : (
+                <>Send Message <Send className="w-4 h-4" /></>
+              )}
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    </SectionWrapper>
+  );
+};
