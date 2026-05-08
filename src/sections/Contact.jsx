@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { SectionWrapper } from "../components/SectionWrapper";
-import { Mail, Send } from "lucide-react";
+import { Mail, Send, CheckCircle, AlertCircle } from "lucide-react";
 
 const GithubIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -21,23 +21,45 @@ const contactLinks = [
   { icon: <GithubIcon className="w-5 h-5" />, label: "GitHub", href: "https://github.com/PonPrasanth10", display: "github.com/PonPrasanth10" },
 ];
 
-const inputStyle = { backgroundColor: "rgba(47,47,47,0.5)", borderColor: "rgba(255,255,255,0.08)" };
-const inputClass = "w-full border rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-all placeholder:text-textSecondary/50";
+const inputStyle = {
+  backgroundColor: "rgba(47,47,47,0.5)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  outline: "none",
+};
+
+const inputClass = "w-full rounded-xl px-4 py-3 text-white text-sm transition-all placeholder-gray-500 focus:ring-1 focus:ring-white/20 bg-transparent";
 
 export const Contact = () => {
   const [formState, setFormState] = useState({ name: "", email: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [status, setStatus] = useState("idle"); // idle | submitting | success | error
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormState({ name: "", email: "", message: "" });
-      setTimeout(() => setIsSuccess(false), 3000);
-    }, 1500);
+    setStatus("submitting");
+
+    try {
+      const res = await fetch("https://formspree.io/f/xpqbjoqg", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          name: formState.name,
+          email: formState.email,
+          message: formState.message,
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormState({ name: "", email: "", message: "" });
+        setTimeout(() => setStatus("idle"), 4000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
 
   return (
@@ -52,7 +74,7 @@ export const Contact = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 lg:items-stretch">
-        {/* Contact info */}
+        {/* Left — contact info */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -66,7 +88,6 @@ export const Contact = () => {
                 Whether you have a question or just want to say hi, I'll try my best to get back to you!
               </p>
             </div>
-
             <div className="flex flex-col gap-3 flex-1 justify-center">
               {contactLinks.map((link, idx) => (
                 <a
@@ -95,18 +116,18 @@ export const Contact = () => {
           </div>
         </motion.div>
 
-        {/* Form */}
+        {/* Right — form */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="w-full lg:w-3/5 glass-card p-6 md:p-8"
         >
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 h-full flex flex-col">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-textSecondary mb-2">Name</label>
               <input
-                type="text" id="name" required
+                type="text" id="name" name="name" required
                 value={formState.name}
                 onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                 className={inputClass} style={inputStyle} placeholder="John Doe"
@@ -115,29 +136,47 @@ export const Contact = () => {
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-textSecondary mb-2">Email</label>
               <input
-                type="email" id="email" required
+                type="email" id="email" name="email" required
                 value={formState.email}
                 onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                 className={inputClass} style={inputStyle} placeholder="john@example.com"
               />
             </div>
-            <div>
+            <div className="flex-1 flex flex-col">
               <label htmlFor="message" className="block text-sm font-medium text-textSecondary mb-2">Message</label>
               <textarea
-                id="message" required rows={5}
+                id="message" name="message" required rows={5}
                 value={formState.message}
                 onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                className={inputClass + " resize-none"} style={inputStyle}
+                className={inputClass + " resize-none flex-1"}
+                style={inputStyle}
                 placeholder="Your message here..."
               />
             </div>
+
+            {/* Status messages */}
+            {status === "success" && (
+              <div className="flex items-center gap-2 text-green-400 text-sm">
+                <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                Message sent! I'll get back to you soon.
+              </div>
+            )}
+            {status === "error" && (
+              <div className="flex items-center gap-2 text-red-400 text-sm">
+                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                Something went wrong. Please try again or email me directly.
+              </div>
+            )}
+
             <button
-              type="submit" disabled={isSubmitting}
-              className="w-full py-3.5 rounded-xl bg-white text-primary font-semibold flex items-center justify-center gap-2 hover:bg-white/90 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base"
+              type="submit"
+              disabled={status === "submitting"}
+              className="w-full py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed text-sm md:text-base"
+              style={{ backgroundColor: "#ffffff", color: "#1F2430" }}
             >
-              {isSubmitting ? (
-                <span className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-              ) : isSuccess ? "Message Sent! ✓" : (
+              {status === "submitting" ? (
+                <span className="w-5 h-5 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin" />
+              ) : (
                 <>Send Message <Send className="w-4 h-4" /></>
               )}
             </button>
