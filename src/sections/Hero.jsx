@@ -144,35 +144,7 @@ export const Hero = () => {
                 />
               </div>
 
-              {/* Floating stat badge */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-4 -left-4 sm:-left-6 px-4 py-2.5 rounded-xl text-sm font-medium text-white"
-                style={{
-                  backgroundColor: "rgba(31,36,48,0.9)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(12px)",
-                }}
-              >
-                <span className="text-accent font-bold text-base">300+</span>
-                <span className="text-textSecondary ml-1.5 text-xs">LeetCode</span>
-              </motion.div>
 
-              {/* Floating AI badge */}
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute -top-4 -right-4 sm:-right-6 px-4 py-2.5 rounded-xl text-sm font-medium text-white"
-                style={{
-                  backgroundColor: "rgba(31,36,48,0.9)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(12px)",
-                }}
-              >
-                <span className="text-accent font-bold text-base">AI</span>
-                <span className="text-textSecondary ml-1.5 text-xs">&amp; ML</span>
-              </motion.div>
             </div>
           </motion.div>
 

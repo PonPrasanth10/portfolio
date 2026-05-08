@@ -7,7 +7,6 @@ const navLinks = [
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },
-  { name: "Contact", href: "#contact" },
 ];
 
 const scrollTo = (href) => {
@@ -75,6 +74,15 @@ export const Navbar = () => {
                 )}
               </a>
             ))}
+
+            {/* Contact CTA button */}
+            <a
+              href="#contact"
+              onClick={(e) => handleClick(e, "#contact")}
+              className="px-5 py-2 rounded-full text-sm font-semibold text-primary bg-white hover:bg-white/90 transition-all duration-300 hover:scale-105"
+            >
+              Contact
+            </a>
           </div>
 
           {/* Mobile toggle */}
@@ -99,7 +107,7 @@ export const Navbar = () => {
               style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
             >
               <div className="px-4 sm:px-6 py-4 flex flex-col gap-1">
-                {navLinks.map((link) => (
+                {[...navLinks, { name: "Contact", href: "#contact" }].map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
